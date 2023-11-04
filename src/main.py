@@ -74,13 +74,14 @@ class PTMViewerApp(QMainWindow):
             return
         
         try:
+            self.input_file_path = file_path
             self.df = read_files(self.input_file_path)
             self.modifications, counts = get_modifications(self.df)
             self.input_file_path = file_path
 
             self.table.setModel(DataFrameModel(self.df))
             self.modifications_list.set_modifications(self.modifications, counts)
-            self.input_file_path_text.setText(",".join(self.input_file_path))
+            self.input_file_path_text.setText(", ".join(self.input_file_path))
             self.export_button.setDisabled(False)
 
         except Exception as e:

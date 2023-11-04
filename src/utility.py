@@ -2,16 +2,16 @@ import os
 import re
 import pandas as pd
 
-MOD_COLUMN = 'modification_info'
+MOD_COLUMN = 'Assigned Modifications'
 MOD_PATTERN = r'-?\d+\.\d+'
 
 def read_file(file_path):
     if file_path.endswith('.csv'):
-        return pd.read_csv(file_path)
+        return pd.read_csv(file_path, keep_default_na=False)
     elif file_path.endswith('.tsv'):
-        return pd.read_csv(file_path, sep='\t')
+        return pd.read_csv(file_path, sep='\t', keep_default_na=False)
     elif file_path.endswith('.xlsx'):
-        return pd.read_excel(file_path)
+        return pd.read_excel(file_path, keep_default_na=False)
     else:
         raise Exception(f'Invalid file type: {os.path.splitext(file_path)[1]}')
 
@@ -36,8 +36,9 @@ def get_modifications(df):
             if modification not in modifications:
                 modifications[modification] = 0
             modifications[modification] += 1
-    
-    return list(modifications.keys()), list(modifications.values())
+
+    sorted_modifications = {k: v for k, v in sorted(modifications.items(), key=lambda item: item[1], reverse=True)}
+    return list(sorted_modifications.keys()), list(sorted_modifications.values())
 
 def filter_by_modifications(df, modifications):
     filtered_df = pd.DataFrame()
